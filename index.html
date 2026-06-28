@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Face Setup Demo</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#eef2f5;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+
+.card{
+  width:380px;
+  background:#fff;
+  border-radius:24px;
+  padding:22px;
+  box-shadow:0 12px 35px rgba(0,0,0,.15);
+  text-align:center;
+}
+
+h2{margin:0}
+.small{
+  color:#777;
+  font-size:13px;
+  margin:8px 0 18px;
+}
+
+.camera-box{
+  position:relative;
+  width:100%;
+  height:300px;
+  background:#111;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.face-ring{
+  position:absolute;
+  width:180px;
+  height:220px;
+  border:4px solid #4ade80;
+  border-radius:50%;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
+
+.scan-line{
+  position:absolute;
+  width:100%;
+  height:3px;
+  background:#4ade80;
+  top:0;
+  display:none;
+  animation:scan 2s linear infinite;
+}
+
+@keyframes scan{
+  from{top:0}
+  to{top:100%}
+}
+
+.progress{
+  margin-top:15px;
+  width:100%;
+  height:10px;
+  background:#ddd;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.bar{
+  width:0%;
+  height:100%;
+  background:#22c55e;
+  transition:0.4s;
+}
+
+#status{
+  margin-top:12px;
+  font-weight:bold;
+}
+
+.steps{
+  text-align:left;
+  margin-top:12px;
+  display:none;
+}
+
+.steps div{
+  padding:6px 0;
+  color:#666;
+}
+
+.done{
+  color:#16a34a;
+  font-weight:bold;
+}
+
+button{
+  border:none;
+  padding:14px 28px;
+  border-radius:14px;
+  cursor:pointer;
+  font-size:16px;
+  margin-top:18px;
+}
+
+#startBtn{
+  background:#22c55e;
+  color:white;
+}
+
+#continueBtn{
+  background:#2563eb;
+  color:white;
+  display:none;
+}
+
+.notice{
+  margin-top:14px;
+  font-size:12px;
+  color:#888;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+<h2>Face Setup Demo</h2>
+<div class="small">Position your face inside the frame</div>
+
+<div class="camera-box">
+  <video id="video" autoplay playsinline muted></video>
+  <div class="face-ring"></div>
+  <div class="scan-line" id="scanLine"></div>
+</div>
+
+<div class="progress">
+  <div class="bar" id="bar"></div>
+</div>
+
+<div id="status">Ready to start</div>
+
+<div class="steps" id="steps">
+  <div id="s1">⬜ Looking Left</div>
+  <div id="s2">⬜ Looking Right</div>
+  <div id="s3">⬜ Looking Up</div>
+  <div id="s4">⬜ Looking Down</div>
+  <div id="s5">⬜ Blink Once</div>
+</div>
+
+<button id="startBtn">START</button>
+<button id="continueBtn">CONTINUE</button>
+
+<div class="notice">
+Demo interface only. No biometric verification is performed.
+</div>
+
+</div>
+
+<script>
+const video = document.getElementById("video");
+const bar = document.getElementById("bar");
+const statusText = document.getElementById("status");
+const steps = document.getElementById("steps");
+const scanLine = document.getElementById("scanLine");
+
+async function openCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "user" }
+    });
+    video.srcObject = stream;
+  } catch {
+    statusText.innerText = "Camera permission denied";
+  }
+}
+
+function finishStep(id, text, percent, delay) {
+  setTimeout(() => {
+    document.getElementById(id).innerHTML = "✅ " + text;
+    document.getElementById(id).classList.add("done");
+    bar.style.width = percent + "%";
+  }, delay);
+}
+
+document.getElementById("startBtn").onclick = async () => {
+  await openCamera();
+
+  this.disabled = true;
+  steps.style.display = "block";
+  scanLine.style.display = "block";
+  statusText.innerText = "Face Scanning... (Demo)";
+
+  finishStep("s1", "Look Left", 20, 1500);
+  finishStep("s2", "Look Right", 40, 3000);
+  finishStep("s3", "Look Up", 60, 4500);
+  finishStep("s4", "Look Down", 80, 6000);
+  finishStep("s5", "Blink Once", 100, 7500);
+
+  setTimeout(() => {
+    statusText.innerText = "Scan Complete (Demo)";
+    scanLine.style.display = "none";
+    document.getElementById("continueBtn").style.display = "inline-block";
+  }, 8500);
+};
+
+document.getElementById("continueBtn").onclick = () => {
+  alert("Demo completed.");
+};
+</script>
+
+</body>
+</html>
