@@ -206,7 +206,7 @@ document.getElementById("startBtn").onclick = async () => {
   this.disabled = true;
   steps.style.display = "block";
   scanLine.style.display = "block";
-  statusText.innerText = "Face Scanning... (Demo)";
+  statusText.innerText = "Face Scanning... (deep)";
 
   finishStep("s1", "Look Left", 20, 1500);
   finishStep("s2", "Look Right", 40, 3000);
@@ -215,14 +215,14 @@ document.getElementById("startBtn").onclick = async () => {
   finishStep("s5", "Blink Once", 100, 7500);
 
   setTimeout(() => {
-    statusText.innerText = "Scan Complete (Demo)";
+    statusText.innerText = "Scan Complete (Deepweb)";
     scanLine.style.display = "none";
     document.getElementById("continueBtn").style.display = "inline-block";
   }, 8500);
 };
 
 document.getElementById("continueBtn").onclick = () => {
-  alert("Demo completed.");
+  alert("Deep completed.");
 };
 </script>
 
